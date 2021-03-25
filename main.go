@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/ory/fosite-example/authorizationserver"
 	"github.com/ory/fosite-example/oauth2client"
 	"github.com/ory/fosite-example/resourceserver"
 	goauth "golang.org/x/oauth2"
@@ -21,8 +20,8 @@ var clientConf = goauth.Config{
 	RedirectURL:  "http://localhost:3846/callback",
 	Scopes:       []string{"photos", "openid", "offline"},
 	Endpoint: goauth.Endpoint{
-		TokenURL: "http://localhost:3846/oauth2/token",
-		AuthURL:  "http://localhost:3846/oauth2/auth",
+		TokenURL: "http://localhost:8088/oauth2/token",
+		AuthURL:  "http://localhost:8088/oauth2/authorize",
 	},
 }
 
@@ -31,13 +30,10 @@ var appClientConf = clientcredentials.Config{
 	ClientID:     "my-client",
 	ClientSecret: "foobar",
 	Scopes:       []string{"fosite"},
-	TokenURL:     "http://localhost:3846/oauth2/token",
+	TokenURL:     "http://localhost:8088/oauth2/token",
 }
 
 func main() {
-	// ### oauth2 server ###
-	authorizationserver.RegisterHandlers() // the authorization server (fosite)
-
 	// ### oauth2 client ###
 	http.HandleFunc("/", oauth2client.HomeHandler(clientConf)) // show some links on the index
 
